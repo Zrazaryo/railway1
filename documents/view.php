@@ -250,18 +250,9 @@ try {
                 $file_extension = strtolower(pathinfo($file['file_name'], PATHINFO_EXTENSION));
                 $is_image = in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif']);
                 
-                // Use view_file.php endpoint for secure file access
-                // Use absolute path from root to work from both admin and staff pages
-                // Get the base path from current script location
-                $current_dir = dirname($_SERVER['SCRIPT_NAME']);
-                // Go up one level from documents/ to get project root
-                $project_root = dirname($current_dir);
-                // Ensure we have a leading slash
-                if ($project_root !== '/') {
-                    $project_root = rtrim($project_root, '/');
-                }
-                
-                $file_view_url = $project_root . '/documents/view_file.php?id=' . $file_id;
+                // URL lihat file: pakai BASE_PATH agar benar di Vercel dan lokal
+                $base = defined('BASE_PATH') ? BASE_PATH : (getenv('VERCEL') ? '' : '/PROJECT ARSIP LOKER');
+                $file_view_url = rtrim($base, '/') . '/documents/view_file.php?id=' . $file_id;
                 
                 $html .= '<div class="mb-2 p-2 border rounded">';
                 $html .= '<div class="d-flex justify-content-between align-items-center">';

@@ -34,9 +34,10 @@ try {
         $alt_sql = "SELECT id FROM document_files WHERE document_id = ? AND file_path != 'STATUS_ONLY' LIMIT 1";
         $alt_file = $db->fetch($alt_sql, [$file['document_id']]);
         if ($alt_file) {
-            // Redirect to the actual file
+            $base = defined('BASE_PATH') ? BASE_PATH : (getenv('VERCEL') ? '' : '/PROJECT ARSIP LOKER');
+            $redirect_url = rtrim($base, '/') . '/documents/view_file.php?id=' . $alt_file['id'] . (isset($_GET['download']) ? '&download=1' : '');
             if (ob_get_level()) ob_end_clean();
-            header('Location: view_file.php?id=' . $alt_file['id'] . (isset($_GET['download']) ? '&download=1' : ''));
+            header('Location: ' . $redirect_url);
             exit();
         } else {
             http_response_code(404);
