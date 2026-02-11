@@ -51,15 +51,15 @@ try {
             exit();
         }
         
-        // Cek apakah username sudah ada (hanya user yang aktif) - case sensitive
-        $existing_user = $db->fetch("SELECT id FROM users WHERE BINARY username = ? AND status = 'active'", [$username]);
+        // Cek username unik per role: satu username boleh dipakai di role lain (mis. aryo di admin dan aryo di superadmin)
+        $existing_user = $db->fetch("SELECT id FROM users WHERE BINARY username = ? AND status = 'active' AND role = ?", [$username, $role]);
         if ($existing_user) {
             echo json_encode(['success' => false, 'message' => 'Username sudah digunakan']);
             exit();
         }
         
-        // Jika ada user dengan username yang sama tapi status inactive, hapus dulu (hard delete)
-        $inactive_user = $db->fetch("SELECT id FROM users WHERE username = ? AND status = 'inactive'", [$username]);
+        // Jika ada user dengan username + role yang sama tapi status inactive, hapus dulu (hard delete)
+        $inactive_user = $db->fetch("SELECT id FROM users WHERE username = ? AND role = ? AND status = 'inactive'", [$username, $role]);
         if ($inactive_user) {
             try {
                 $inactive_user_id = $inactive_user['id'];
@@ -198,8 +198,8 @@ try {
             exit();
         }
         
-        // Cek apakah username sudah digunakan oleh user lain (hanya user yang aktif) - case sensitive
-        $username_check = $db->fetch("SELECT id FROM users WHERE BINARY username = ? AND id != ? AND status = 'active'", [$username, $user_id]);
+        // Cek username unik per role: hanya cek bentrok dengan user lain di role yang sama
+        $username_check = $db->fetch("SELECT id FROM users WHERE BINARY username = ? AND id != ? AND status = 'active' AND role = ?", [$username, $user_id, $role]);
         if ($username_check) {
             echo json_encode(['success' => false, 'message' => 'Username sudah digunakan']);
             exit();
