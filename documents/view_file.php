@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 
@@ -34,6 +35,7 @@ try {
         $alt_file = $db->fetch($alt_sql, [$file['document_id']]);
         if ($alt_file) {
             // Redirect to the actual file
+            if (ob_get_level()) ob_end_clean();
             header('Location: view_file.php?id=' . $alt_file['id'] . (isset($_GET['download']) ? '&download=1' : ''));
             exit();
         } else {

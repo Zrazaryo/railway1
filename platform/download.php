@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 
@@ -9,6 +10,7 @@ require_login();
 $document_id = (int)($_GET['id'] ?? 0);
 
 if ($document_id <= 0) {
+    if (ob_get_level()) ob_end_clean();
     header('Location: index.php');
     exit();
 }
@@ -19,6 +21,7 @@ try {
     $document = $db->fetch($sql, [$document_id]);
     
     if (!$document || empty($document['file_path'])) {
+        if (ob_get_level()) ob_end_clean();
         header('Location: index.php?error=' . urlencode('Dokumen tidak ditemukan'));
         exit();
     }
@@ -46,6 +49,7 @@ try {
     }
     
     if (!$absolute_path || !file_exists($absolute_path)) {
+        if (ob_get_level()) ob_end_clean();
         header('Location: index.php?error=' . urlencode('File tidak ditemukan di server'));
         exit();
     }
@@ -69,6 +73,7 @@ try {
     exit();
     
 } catch (Exception $e) {
+    if (ob_get_level()) ob_end_clean();
     header('Location: index.php?error=' . urlencode('Terjadi kesalahan: ' . $e->getMessage()));
     exit();
 }

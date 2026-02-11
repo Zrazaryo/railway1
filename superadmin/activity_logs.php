@@ -1,6 +1,6 @@
 <?php
-// Load functions
-if (file_exists('../includes/functions.php')) {
+ob_start();
+if (file_exists(__DIR__ . '/../includes/functions.php')) {
     require_once __DIR__ . '/../includes/functions.php';
 }
 
@@ -9,12 +9,13 @@ init_multi_session();
 
 // Check if user is logged in as superadmin
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'superadmin') {
+    if (ob_get_level()) ob_end_clean();
     header('Location: ../auth/login_superadmin.php');
     exit();
 }
 
 // Load database
-if (file_exists('../config/database.php')) {
+if (file_exists(__DIR__ . '/../config/database.php')) {
     require_once __DIR__ . '/../config/database.php';
 } else {
     die('Database configuration not found');

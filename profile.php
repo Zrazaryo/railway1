@@ -1,7 +1,8 @@
 <?php
 session_start();
-require_once 'config/database.php';
-require_once 'includes/functions.php';
+ob_start();
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/functions.php';
 
 // Cek login
 require_login();
@@ -113,6 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) 
                 $_SESSION['profile_picture'] = $relative_path;
                 
                 // Redirect to refresh page and show photo
+                if (ob_get_level()) ob_end_clean();
                 header('Location: profile.php?success=photo_uploaded');
                 exit();
             } else {

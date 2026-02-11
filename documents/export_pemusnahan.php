@@ -1,10 +1,12 @@
 <?php
 session_start();
+ob_start();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 require_login();
 if (!is_admin()) {
+    if (ob_get_level()) ob_end_clean();
     header('Location: pemusnahan.php?error=access_denied');
     exit();
 }
@@ -41,6 +43,7 @@ try {
         $filename = 'export_pemusnahan_semua_' . date('Y-m-d_His') . '.csv';
     } else {
         if (empty($selected_ids)) {
+            if (ob_get_level()) ob_end_clean();
             header('Location: pemusnahan.php?error=no_selection');
             exit();
         }
@@ -73,10 +76,12 @@ try {
     }
 
     if (empty($documents)) {
+        if (ob_get_level()) ob_end_clean();
         header('Location: pemusnahan.php?error=no_data');
         exit();
     }
 
+    if (ob_get_level()) ob_end_clean();
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Pragma: no-cache');
@@ -107,7 +112,7 @@ try {
         'Username Pembuat',
         'Tanggal Dibuat'
     ];
-    fputcsv($output, $headers);
+    fputcsv($output, $headers, ',', '"', '\\');
 
     function format_document_origin_export($origin) {
         switch ($origin) {
@@ -144,7 +149,7 @@ try {
             $doc['created_by_username'] ?? '',
             !empty($doc['created_at']) ? format_date_indonesia($doc['created_at'], true) : ''
         ];
-        fputcsv($output, $row);
+        fputcsv($output, $row, ',', '"', '\\');
     }
 
     fclose($output);
@@ -159,6 +164,7 @@ try {
     exit();
 
 } catch (Exception $e) {
+    if (ob_get_level()) ob_end_clean();
     header('Location: pemusnahan.php?error=export_failed&message=' . urlencode($e->getMessage()));
     exit();
 }

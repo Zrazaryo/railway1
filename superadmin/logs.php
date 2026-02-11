@@ -1,10 +1,12 @@
 <?php
 session_start();
+ob_start();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 // Cek login dan role superadmin
 if (!is_logged_in() || $_SESSION['user_role'] !== 'superadmin') {
+    if (ob_get_level()) ob_end_clean();
     header('Location: ../auth/login_superadmin.php');
     exit();
 }
