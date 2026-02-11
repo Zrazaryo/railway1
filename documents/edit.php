@@ -172,28 +172,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $document) {
                 $status_field = $status_field_mapping[$field_name];
                 $document_status = sanitize_input($_POST[$status_field] ?? 'none'); // 'exists' atau 'none'
                 
-                // Hapus semua record lama dengan document_type yang sama
                 $old_files_sql = "SELECT * FROM document_files WHERE document_id = ? AND document_type = ?";
                 $old_files = $db->fetchAll($old_files_sql, [$document_id, $document_name]);
                 
+                // Jika status "Ada" dan tidak ada file baru: pertahankan file lama (jangan hapus, jangan ganti placeholder)
+                if ($document_status === 'exists' && !$has_file_upload) {
+                    // Tidak ubah apa-apa; seluruh isi dokumen (gambar/file) tetap tersimpan
+                    continue;
+                }
+                
+                // Hapus file lama hanya ketika: ada file baru (ganti file) ATAU user pilih "Tidak Ada"
                 foreach ($old_files as $old_file) {
-                    // Hapus file fisik dari server (hanya jika bukan status placeholder)
                     if (!empty($old_file['file_path']) && $old_file['file_path'] !== 'STATUS_ONLY') {
                         $file_path_to_delete = $old_file['file_path'];
-                        
-                        // Jika path relatif, coba beberapa lokasi yang mungkin
                         if (!file_exists($file_path_to_delete)) {
-                            // Coba di documents/uploads/
                             $alt_path = __DIR__ . '/uploads/' . basename($old_file['file_path']);
                             if (file_exists($alt_path)) {
                                 $file_path_to_delete = $alt_path;
                             } else {
-                                // Coba di root uploads/
                                 $alt_path2 = __DIR__ . '/../uploads/' . basename($old_file['file_path']);
                                 if (file_exists($alt_path2)) {
                                     $file_path_to_delete = $alt_path2;
                                 } else {
-                                    // Coba path relatif dari root project
                                     $alt_path3 = __DIR__ . '/../' . ltrim($old_file['file_path'], '/');
                                     if (file_exists($alt_path3)) {
                                         $file_path_to_delete = $alt_path3;
@@ -201,21 +201,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $document) {
                                 }
                             }
                         }
-                        
                         if (file_exists($file_path_to_delete)) {
                             delete_file($file_path_to_delete);
                         }
                     }
-                    // Hapus record dari database
                     $delete_sql = "DELETE FROM document_files WHERE id = ?";
                     $db->execute($delete_sql, [$old_file['id']]);
                 }
                 
-                // Jika ada file yang diupload, simpan file
+                // Jika ada file baru yang diupload, simpan
                 if ($has_file_upload) {
                     $file = $_FILES[$field_name];
                     if (is_allowed_file_type($file['name'])) {
-                        // Upload file baru
                         $upload_result = upload_file($file);
                         if ($upload_result['success']) {
                             $has_content = isset($upload_result['content']);
@@ -246,20 +243,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $document) {
                             $uploaded_files++;
                         }
                     }
-                } elseif ($document_status === 'exists') {
-                    // Jika status "Ada" tapi tidak ada file, buat record placeholder
+                } elseif ($document_status === 'exists' && empty($old_files)) {
+                    // Hanya buat placeholder jika user pilih "Ada" tapi memang belum ada file sama sekali (kasus langka)
                     $detail_sql = "INSERT INTO document_files (document_id, document_type, file_path, file_name, file_size, file_type) 
                                    VALUES (?, ?, ?, ?, ?, ?)";
                     $db->execute($detail_sql, [
                         $document_id,
                         $document_name,
-                        'STATUS_ONLY', // Placeholder untuk status "Ada" tanpa file
-                        'Ada', // file_name untuk status
-                        0, // file_size = 0
-                        'status' // file_type = 'status'
+                        'STATUS_ONLY',
+                        'Ada',
+                        0,
+                        'status'
                     ]);
                 }
-                // Jika status "none" (Tidak Ada), tidak perlu membuat record (sudah dihapus di atas)
             }
 
             log_activity($_SESSION['user_id'], 'EDIT_DOCUMENT', "Memperbarui dokumen: $full_name ($uploaded_files file baru)", $document_id);
