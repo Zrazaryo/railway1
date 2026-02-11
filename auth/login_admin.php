@@ -1,8 +1,6 @@
 <?php
-// Load functions first untuk init_multi_session
-if (file_exists('../includes/functions.php')) {
-    require_once '../includes/functions.php';
-}
+// Load functions first untuk init_multi_session (pakai __DIR__ agar benar saat di-include dari Vercel front controller)
+require_once __DIR__ . '/../includes/functions.php';
 
 // Inisialisasi session dengan dukungan multi-tab
 init_multi_session();
@@ -14,8 +12,8 @@ $success_message = '';
 $force_logout = isset($_GET['logout']) && $_GET['logout'] == '1';
 if ($force_logout && isset($_SESSION['user_id'])) {
     // Logout current user
-    if (file_exists('../config/database.php')) {
-        require_once '../config/database.php';
+    if (file_exists(__DIR__ . '/../config/database.php')) {
+        require_once __DIR__ . '/../config/database.php';
         if (is_logged_in()) {
             log_activity($_SESSION['user_id'], 'LOGOUT', 'User logout untuk login sebagai user lain');
         }
@@ -32,10 +30,10 @@ if ($force_logout && isset($_SESSION['user_id'])) {
 
 // Check if database is configured
 $db_configured = false;
-if (file_exists('../config/database.php')) {
+if (file_exists(__DIR__ . '/../config/database.php')) {
     try {
-        require_once '../config/database.php';
-        require_once '../includes/functions.php';
+        require_once __DIR__ . '/../config/database.php';
+        require_once __DIR__ . '/../includes/functions.php';
         $db_configured = true;
     } catch (Exception $e) {
         $db_configured = false;
