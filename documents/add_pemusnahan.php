@@ -220,12 +220,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <!-- Navbar -->
-    <?php include '../includes/navbar.php'; ?>
+    <?php include __DIR__ . '/../includes/navbar.php'; ?>
     
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <?php include '../includes/sidebar.php'; ?>
+            <?php include __DIR__ . '/../includes/sidebar.php'; ?>
             
             <!-- Main Content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">

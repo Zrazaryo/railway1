@@ -245,8 +245,8 @@ function days_remaining($restore_deadline) {
     </style>
 </head>
 <body>
-    <?php include '../includes/navbar.php'; ?>
-    <?php include '../includes/sidebar.php'; ?>
+    <?php include __DIR__ . '/../includes/navbar.php'; ?>
+    <?php include __DIR__ . '/../includes/sidebar.php'; ?>
 
     <main class="container-fluid mt-4">
         <div class="row mb-4">

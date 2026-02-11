@@ -146,11 +146,11 @@ $categories = $db->fetchAll("SELECT id, category_name FROM document_categories O
     </style>
 </head>
 <body>
-    <?php include '../includes/navbar.php'; ?>
+    <?php include __DIR__ . '/../includes/navbar.php'; ?>
     
     <div class="container-fluid">
         <div class="row">
-            <?php include '../includes/sidebar.php'; ?>
+            <?php include __DIR__ . '/../includes/sidebar.php'; ?>
             
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <!-- Search Header -->
