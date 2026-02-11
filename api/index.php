@@ -41,8 +41,26 @@ if (strpos($path, 'api/') === 0) {
 // Request ke file PHP lain di root atau subfolder
 $targetFile = $projectRoot . '/' . $path;
 $real = realpath($targetFile);
+
+// Langsung ke file .php
 if ($real && is_file($real) && strpos($real, $projectRoot) === 0 && pathinfo($real, PATHINFO_EXTENSION) === 'php') {
     require $real;
+    return;
+}
+
+// Path mengarah ke folder (mis. /documents/, /users/, /reports/, /logs/) -> coba index.php di dalamnya
+if ($real && is_dir($real)) {
+    $indexPhp = rtrim($real, DIRECTORY_SEPARATOR) . '/index.php';
+    if (file_exists($indexPhp) && is_file($indexPhp)) {
+        require $indexPhp;
+        return;
+    }
+}
+
+// Path tanpa .php (mis. "documents" atau "reports") -> coba path/index.php (fallback jika realpath gagal)
+$dirIndex = $projectRoot . '/' . $path . '/index.php';
+if (file_exists($dirIndex) && is_file($dirIndex)) {
+    require $dirIndex;
     return;
 }
 
