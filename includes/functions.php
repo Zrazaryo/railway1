@@ -1,6 +1,11 @@
 <?php
 // Fungsi-fungsi utilitas untuk sistem arsip dokumen
 
+// Base path URL: kosong di Vercel (root domain), '/PROJECT ARSIP LOKER' untuk Laragon lokal
+if (!defined('BASE_PATH')) {
+    define('BASE_PATH', getenv('VERCEL') ? '' : '/PROJECT ARSIP LOKER');
+}
+
 /**
  * Inisialisasi session dengan dukungan multi-tab
  * Set session name berdasarkan parameter tab di URL

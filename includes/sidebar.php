@@ -2,6 +2,7 @@
 $isAdmin = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
 $isSuperadmin = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'superadmin';
 $roleName = $isSuperadmin ? 'Superadmin' : ($isAdmin ? 'Admin' : 'Staff');
+$base = defined('BASE_PATH') ? BASE_PATH : (getenv('VERCEL') ? '' : '/PROJECT ARSIP LOKER');
 ?>
 <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
     <div class="offcanvas-header">
@@ -15,129 +16,129 @@ $roleName = $isSuperadmin ? 'Superadmin' : ($isAdmin ? 'Admin' : 'Staff');
         <nav class="nav flex-column">
             <?php if ($isSuperadmin): ?>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/superadmin/dashboard.php">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/superadmin/dashboard.php">
                         <i class="fas fa-tachometer-alt me-3"></i>
                         Dashboard
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/documents/">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/documents/">
                         <i class="fas fa-file-alt me-3"></i>
                         Dokumen Keseluruhan
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/lockers/list.php">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/lockers/list.php">
                         <i class="fas fa-archive me-3"></i>
                         Lemari Dokumen
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/documents/pemusnahan.php">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/documents/pemusnahan.php">
                         <i class="fas fa-archive me-3"></i>
                         Lemari Pemusnahan
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/reports/">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/reports/">
                         <i class="fas fa-chart-bar me-3"></i>
                         Laporan
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/logs/">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/logs/">
                         <i class="fas fa-history me-3"></i>
                         Log Aktivitas
                     </a>
                 </div>
             <?php elseif ($isAdmin): ?>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/dashboard.php">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/dashboard.php">
                         <i class="fas fa-tachometer-alt me-3"></i>
                         Dashboard
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/documents/">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/documents/">
                         <i class="fas fa-file-alt me-3"></i>
                         Dokumen Keseluruhan
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/lockers/list.php">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/lockers/list.php">
                         <i class="fas fa-archive me-3"></i>
                         Lemari Dokumen
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/documents/pemusnahan.php">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/documents/pemusnahan.php">
                         <i class="fas fa-archive me-3"></i>
                         Lemari Pemusnahan
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/lockers/select.php">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/lockers/select.php">
                         <i class="fas fa-plus me-3"></i>
                         Tambah Dokumen
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/users/">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/users/">
                         <i class="fas fa-users me-3"></i>
                         Manajemen User
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/reports/">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/reports/">
                         <i class="fas fa-chart-bar me-3"></i>
                         Laporan
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/logs/">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/logs/">
                         <i class="fas fa-history me-3"></i>
                         Log Aktivitas
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/settings.php">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/settings.php">
                         <i class="fas fa-cog me-3"></i>
                         Pengaturan
                     </a>
                 </div>
             <?php else: ?>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/staff/dashboard.php">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/staff/dashboard.php">
                         <i class="fas fa-tachometer-alt me-3"></i>
                         Dashboard
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/documents/">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/documents/">
                         <i class="fas fa-file-alt me-3"></i>
                         Dokumen Keseluruhan
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/lockers/list.php">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/lockers/list.php">
                         <i class="fas fa-archive me-3"></i>
                         Lemari Dokumen
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/documents/pemusnahan.php">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/documents/pemusnahan.php">
                         <i class="fas fa-archive me-3"></i>
                         Lemari Pemusnahan
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/lockers/select.php">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/lockers/select.php">
                         <i class="fas fa-plus me-3"></i>
                         Tambah Dokumen
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link text-white py-3 border-bottom" href="/PROJECT ARSIP LOKER/documents/?mine=1">
+                    <a class="nav-link text-white py-3 border-bottom" href="<?php echo $base; ?>/documents/?mine=1">
                         <i class="fas fa-folder-open me-3"></i>
                         Dokumen Saya
                     </a>
@@ -145,7 +146,7 @@ $roleName = $isSuperadmin ? 'Superadmin' : ($isAdmin ? 'Admin' : 'Staff');
             <?php endif; ?>
             
             <div class="nav-item mt-auto">
-                <a class="nav-link text-white py-3 border-top" href="/PROJECT ARSIP LOKER/auth/logout.php">
+                <a class="nav-link text-white py-3 border-top" href="<?php echo $base; ?>/auth/logout.php">
                     <i class="fas fa-sign-out-alt me-3"></i>
                     Keluar
                 </a>
@@ -162,7 +163,7 @@ $roleName = $isSuperadmin ? 'Superadmin' : ($isAdmin ? 'Admin' : 'Staff');
                         // Ensure path is absolute from root
                         $sidebar_img_path = (strpos($sidebar_profile_picture, '/') === 0 || strpos($sidebar_profile_picture, 'http') === 0) 
                             ? $sidebar_profile_picture 
-                            : '/PROJECT ARSIP LOKER/' . ltrim($sidebar_profile_picture, '/');
+                            : $base . '/' . ltrim($sidebar_profile_picture, '/');
                     ?>
                         <img src="<?php echo e($sidebar_img_path); ?>" alt="Profile" 
                              class="rounded-circle" 

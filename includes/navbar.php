@@ -1,6 +1,7 @@
 <?php 
 $isStaff = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'staff';
 $isSuperadmin = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'superadmin';
+$base = defined('BASE_PATH') ? BASE_PATH : (getenv('VERCEL') ? '' : '/PROJECT ARSIP LOKER');
 
 // Get profile picture from session or database
 $profile_picture = $_SESSION['profile_picture'] ?? null;
@@ -32,14 +33,14 @@ if (!$profile_picture && isset($_SESSION['user_id'])) {
         
         <a class="navbar-brand d-flex align-items-center" href="<?php 
             if ($isSuperadmin) {
-                echo '/PROJECT ARSIP LOKER/superadmin/dashboard.php';
+                echo $base . '/superadmin/dashboard.php';
             } elseif ($isStaff) {
-                echo '/PROJECT ARSIP LOKER/staff/dashboard.php';
+                echo $base . '/staff/dashboard.php';
             } else {
-                echo '/PROJECT ARSIP LOKER/dashboard.php';
+                echo $base . '/dashboard.php';
             }
         ?>">
-            <img src="/PROJECT ARSIP LOKER/assets/images/jakpus-logo.png" alt="JAKPUS Logo" style="height: 32px; width: auto; margin-right: 10px;">
+            <img src="<?php echo $base; ?>/assets/images/jakpus-logo.png" alt="JAKPUS Logo" style="height: 32px; width: auto; margin-right: 10px;">
             Sistem Tata Arsip Imigrasi
         </a>
         
@@ -50,7 +51,7 @@ if (!$profile_picture && isset($_SESSION['user_id'])) {
                         // Ensure path is absolute from root
                         $profile_img_path = (strpos($profile_picture, '/') === 0 || strpos($profile_picture, 'http') === 0) 
                             ? $profile_picture 
-                            : '/PROJECT ARSIP LOKER/' . ltrim($profile_picture, '/');
+                            : $base . '/' . ltrim($profile_picture, '/');
                     ?>
                         <img src="<?php echo e($profile_img_path); ?>" alt="Profile" 
                              class="rounded-circle me-2" 
@@ -64,18 +65,18 @@ if (!$profile_picture && isset($_SESSION['user_id'])) {
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item" href="/PROJECT ARSIP LOKER/profile.php">
+                        <a class="dropdown-item" href="<?php echo $base; ?>/profile.php">
                             <i class="fas fa-user me-2"></i>Profil
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="/PROJECT ARSIP LOKER/settings.php">
+                        <a class="dropdown-item" href="<?php echo $base; ?>/settings.php">
                             <i class="fas fa-cog me-2"></i>Pengaturan
                         </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                        <a class="dropdown-item text-danger" href="/PROJECT ARSIP LOKER/auth/logout.php">
+                        <a class="dropdown-item text-danger" href="<?php echo $base; ?>/auth/logout.php">
                             <i class="fas fa-sign-out-alt me-2"></i>Keluar
                         </a>
                     </li>

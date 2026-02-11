@@ -37,7 +37,7 @@ if (!$is_valid_request && isset($_GET['token'])) {
 if (!$is_valid_request && !isset($_GET['token'])) {
     // Require admin login
     if (!isset($_SESSION['user_id'])) {
-        header('Location: /PROJECT ARSIP LOKER/auth/login.php');
+        header('Location: ' . (defined('BASE_PATH') ? BASE_PATH : (getenv('VERCEL') ? '' : '/PROJECT ARSIP LOKER')) . '/auth/login.php');
         exit();
     }
     require_admin();

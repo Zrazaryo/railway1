@@ -271,9 +271,10 @@ try {
                                     <div class="profile-avatar">
                                         <?php if (!empty($user_info['profile_picture'])): 
                                             // Ensure path is absolute from root
+                                            $profile_base = defined('BASE_PATH') ? BASE_PATH : (getenv('VERCEL') ? '' : '/PROJECT ARSIP LOKER');
                                             $avatar_img_path = (strpos($user_info['profile_picture'], '/') === 0 || strpos($user_info['profile_picture'], 'http') === 0) 
                                                 ? $user_info['profile_picture'] 
-                                                : '/PROJECT ARSIP LOKER/' . ltrim($user_info['profile_picture'], '/');
+                                                : $profile_base . '/' . ltrim($user_info['profile_picture'], '/');
                                         ?>
                                             <img src="<?php echo e($avatar_img_path); ?>" alt="Profile Picture" 
                                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">

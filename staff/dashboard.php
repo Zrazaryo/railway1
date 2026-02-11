@@ -229,7 +229,7 @@ try {
                             </small>
                         </div>
                         <div class="col-md-6 text-end">
-                            <a class="btn btn-sm btn-primary" href="/PROJECT ARSIP LOKER/documents/add.php">
+                            <a class="btn btn-sm btn-primary" href="<?php echo (defined('BASE_PATH') ? BASE_PATH : (getenv('VERCEL') ? '' : '/PROJECT ARSIP LOKER')); ?>/documents/add.php">
                                 <i class="fa-solid fa-circle-plus me-1"></i>Tambahkan Dokumen
                             </a>
                         </div>
