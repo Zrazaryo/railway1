@@ -139,6 +139,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
             
             $uploaded_files = 0;
+            // Pastikan kolom file_content ada (untuk upload di Vercel / environment read-only)
+            ensure_file_content_column($db);
             
             foreach ($document_types as $field_name => $document_name) {
                 if (isset($_FILES[$field_name]) && !empty($_FILES[$field_name]['name'])) {

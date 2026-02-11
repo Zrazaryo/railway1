@@ -1215,6 +1215,19 @@ function upload_file($file, $upload_dir = 'uploads/') {
 }
 
 /**
+ * Pastikan kolom file_content ada di document_files (untuk upload di Vercel).
+ * Menjalankan ALTER TABLE sekali jika kolom belum ada.
+ */
+function ensure_file_content_column($db) {
+    $cols = $db->fetchAll("SHOW COLUMNS FROM document_files LIKE 'file_content'");
+    if (!empty($cols)) {
+        return true;
+    }
+    $db->execute("ALTER TABLE document_files ADD COLUMN file_content LONGBLOB NULL AFTER file_type");
+    return true;
+}
+
+/**
  * Hapus file
  */
 function delete_file($filepath) {

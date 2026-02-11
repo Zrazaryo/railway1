@@ -163,6 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $document) {
             ];
 
             $uploaded_files = 0;
+            ensure_file_content_column($db);
             foreach ($document_types as $field_name => $document_name) {
                 // Cek apakah ada file yang diupload
                 $has_file_upload = isset($_FILES[$field_name]) && !empty($_FILES[$field_name]['name']);
