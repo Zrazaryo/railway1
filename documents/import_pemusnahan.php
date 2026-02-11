@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 
@@ -53,8 +54,8 @@ if (empty($error_message) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FI
             fseek($handle, 3);
         }
         
-        // Header
-        $headers = fgetcsv($handle);
+        // Header — escape parameter wajib di PHP 8.4+
+        $headers = fgetcsv($handle, 0, ',', '"', '\\');
         if ($headers === false) {
             throw new Exception('File kosong atau format tidak valid');
         }
@@ -124,7 +125,7 @@ if (empty($error_message) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FI
         }
         
         $row_number = 1;
-        while (($row = fgetcsv($handle)) !== false) {
+        while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
             $row_number++;
             if (empty(array_filter($row))) {
                 continue;
@@ -380,6 +381,9 @@ if ($failed_count > 0 && !empty($failed_rows)) {
     $_SESSION['import_failed_rows'] = $failed_rows;
 }
 
+if (ob_get_level()) {
+    ob_end_clean();
+}
 header('Location: ' . $redirect_url);
 exit();
 ?>
