@@ -1,0 +1,89 @@
+🗑️ MENU SAMPAH - PANDUAN CEPAT
+═══════════════════════════════════════════════════════════════
+
+⚡ 3 LANGKAH SETUP (2 menit):
+
+1. RUN SETUP SCRIPT
+   URL: http://localhost/PROJECT ARSIP LOKER/setup_trash_table.php
+   Login: Sebagai admin
+   Result: Tabel document_trash & trash_audit_logs dibuat
+
+2. VERIFIKASI
+   Sidebar harus ada "Menu Sampah" setelah "Lemari Pemusnahan"
+
+3. TEST
+   Delete dokumen → Cek di Menu Sampah → Restore → OK ✓
+
+═══════════════════════════════════════════════════════════════
+
+🎯 FITUR DALAM 10 DETIK:
+
+📌 Dokumen dihapus disimpan 30 hari di sampah
+🔄 Bisa di-restore kembali ke aktif (dalam 30 hari)
+🗑️ Bisa dihapus permanen kapan saja (tidak bisa di-restore)
+📅 Auto-cleanup dokumen >30 hari (via cron job)
+📊 Audit trail lengkap (siapa delete/restore kapan)
+
+═══════════════════════════════════════════════════════════════
+
+📂 FILE PENTING:
+
+Setup:
+  • setup_trash_table.php ............... Run ini dulu!
+
+Menu:
+  • documents/trash.php ................ Halaman sampah
+
+Cleanup:
+  • cleanup_trash.php .................. Auto-cleanup script
+
+Dokumentasi:
+  • TRASH_FEATURE_GUIDE.md ............. Panduan lengkap
+  • IMPLEMENTATION_COMPLETE.md ......... Summary implementasi
+  • MAINTENANCE_TROUBLESHOOTING.md ..... Troubleshooting
+
+═══════════════════════════════════════════════════════════════
+
+❓ QUICK FAQ:
+
+Q: Dimana akses Menu Sampah?
+A: Sidebar → "Menu Sampah" (dibawah "Lemari Pemusnahan")
+
+Q: Berapa hari bisa restore?
+A: 30 hari dari waktu dihapus
+
+Q: Bisa restore setelah 30 hari?
+A: Tidak, otomatis dihapus permanen
+
+Q: Bisa delete sebelum 30 hari?
+A: Ya, "Hapus Permanen" untuk delete langsung
+
+Q: Siapa bisa akses Menu Sampah?
+A: Hanya Admin
+
+═══════════════════════════════════════════════════════════════
+
+⚙️ SETUP CRON (OPTIONAL):
+
+Untuk auto-cleanup dokumen >30 hari setiap hari:
+
+  0 2 * * * curl http://localhost/PROJECT ARSIP LOKER/cleanup_trash.php
+
+Atau di cPanel:
+  1. cPanel → Cron Jobs
+  2. Tambah command di atas
+  3. Simpan
+
+═══════════════════════════════════════════════════════════════
+
+🚨 IMPORTANT:
+
+✓ BACKUP DATABASE sebelum use
+✓ Test dulu di dev environment
+✓ Monitor Menu Sampah secara berkala
+✓ Setup cron job untuk auto-cleanup
+
+═══════════════════════════════════════════════════════════════
+
+Dokumentasi Lengkap: TRASH_FEATURE_GUIDE.md
+Status: ✅ Ready to Production

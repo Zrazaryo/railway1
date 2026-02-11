@@ -1,0 +1,217 @@
+/**
+ * Search Components CSS - Styling untuk komponen pencarian standar
+ */
+
+/* Search Filter Container */
+.search-filter-container {
+    background: #fff !important;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #fff !important;
+}
+
+.search-filter-container .form-control {
+    border-radius: 6px;
+    border: 1px solid #ced4da !important;
+    background: #fff !important;
+}
+
+.search-filter-container .form-select {
+    border-radius: 6px;
+    border: 1px solid #ced4da !important;
+    background: #fff !important;
+}
+    border: 1.5px solid #86b7fe !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+
+.search-filter-container .btn {
+    border-radius: 6px;
+}
+
+/* Input Group Styling */
+.search-filter-container .input-group-text {
+    background-color: #fff !important;
+    border-color: #fff !important;
+    color: #6c757d;
+}
+
+.search-filter-container .input-group .form-control {
+    border-left: 0;
+}
+
+.search-filter-container .input-group .form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Advanced Search Button */
+.search-filter-container .btn-primary {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    border: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.search-filter-container .btn-primary:hover {
+    background: linear-gradient(135deg, #0b5ed7 0%, #0a58ca 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+}
+
+/* Refresh Button */
+.search-filter-container .btn[title="Muat Ulang"] {
+    background: #6c757d;
+    border-color: #fff !important;
+}
+
+.search-filter-container .btn[title="Muat Ulang"]:hover {
+    background: #5c636a;
+    border-color: #fff !important;
+}
+
+/* Advanced Search Modal */
+.modal-header.bg-primary {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
+}
+
+.modal .form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.modal .form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.modal .alert-info {
+    background-color: #e7f3ff;
+    border-color: #b8daff;
+    color: #0c5460;
+}
+
+/* Search Results Info */
+.search-results-info {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+}
+
+.search-results-info .btn-outline-secondary {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-filter-container {
+        padding: 1rem;
+    }
+    
+    .search-filter-container .col-md-4,
+    .search-filter-container .col-md-3,
+    .search-filter-container .col-md-2,
+    .search-filter-container .col-md-1 {
+        margin-bottom: 0.75rem;
+    }
+    
+    .search-filter-container .btn {
+        width: 100% !important;
+    }
+}
+
+/* Loading States */
+.search-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.search-loading .btn {
+    position: relative;
+}
+
+.search-loading .btn::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid transparent;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Search Highlight */
+.search-highlight {
+    background-color: #fff3cd;
+    padding: 0.125rem 0.25rem;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+/* Empty State */
+.search-empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6c757d;
+}
+
+.search-empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Success/Error Messages */
+.search-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1060;
+    min-width: 300px;
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .search-filter-container {
+        background: #212529;
+        border-color: #495057;
+    }
+    
+    .search-filter-container .input-group-text {
+        background-color: #495057;
+        border-color: #6c757d;
+        color: #adb5bd;
+    }
+    
+    .search-results-info {
+        background: #2d3748;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+}

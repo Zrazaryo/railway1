@@ -1,0 +1,97 @@
+<svg viewBox="0 0 300 280" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bgGradient" cx="50%" cy="35%">
+      <stop offset="0%" style="stop-color:#3d5a7a;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#1f3a52;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f1f2a;stop-opacity:1" />
+    </radialGradient>
+    <pattern id="ropePattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 0,10 Q 5,5 10,10 T 20,10" stroke="#c9a961" stroke-width="1.5" fill="none"/>
+    </pattern>
+  </defs>
+
+  <!-- Outer gold circle border -->
+  <circle cx="150" cy="120" r="113" fill="#c9a961"/>
+  
+  <!-- Inner dark blue circle -->
+  <circle cx="150" cy="120" r="108" fill="url(#bgGradient)"/>
+  
+  <!-- Twisted rope border (thick) -->
+  <circle cx="150" cy="120" r="105" fill="none" stroke="#d4af37" stroke-width="8" stroke-dasharray="6,4" stroke-linecap="round"/>
+  
+  <!-- Inner gold circle border -->
+  <circle cx="150" cy="120" r="102" fill="none" stroke="#c9a961" stroke-width="2"/>
+
+  <!-- Gold 5-pointed star at top -->
+  <g transform="translate(150, 40)">
+    <polygon points="0,-18 4,-8 14,-8 6,0 10,10 0,4 -10,10 -6,0 -14,-8 -4,-8" fill="#d4af37"/>
+  </g>
+  
+  <!-- Left laurel wreath with leaf detail -->
+  <g fill="#d4af37" opacity="0.95">
+    <!-- Curved stem -->
+    <path d="M 75,65 Q 60,85 62,115 Q 65,145 85,160" fill="none" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/>
+    <!-- Leaf nodes -->
+    <ellipse cx="72" cy="75" rx="4" ry="3" transform="rotate(-40 72 75)"/>
+    <ellipse cx="64" cy="95" rx="4" ry="3" transform="rotate(-30 64 95)"/>
+    <ellipse cx="62" cy="115" rx="4" ry="3" transform="rotate(0 62 115)"/>
+    <ellipse cx="68" cy="135" rx="4" ry="3" transform="rotate(30 68 135)"/>
+    <ellipse cx="82" cy="155" rx="4" ry="3" transform="rotate(40 82 155)"/>
+  </g>
+  
+  <!-- Right laurel wreath with leaf detail -->
+  <g fill="#d4af37" opacity="0.95">
+    <!-- Curved stem -->
+    <path d="M 225,65 Q 240,85 238,115 Q 235,145 215,160" fill="none" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/>
+    <!-- Leaf nodes -->
+    <ellipse cx="228" cy="75" rx="4" ry="3" transform="rotate(40 228 75)"/>
+    <ellipse cx="236" cy="95" rx="4" ry="3" transform="rotate(30 236 95)"/>
+    <ellipse cx="238" cy="115" rx="4" ry="3" transform="rotate(0 238 115)"/>
+    <ellipse cx="232" cy="135" rx="4" ry="3" transform="rotate(-30 232 135)"/>
+    <ellipse cx="218" cy="155" rx="4" ry="3" transform="rotate(-40 218 155)"/>
+  </g>
+
+  <!-- Outer shield/circle ring for emblem -->
+  <circle cx="150" cy="120" r="95" fill="none" stroke="#d4af37" stroke-width="4" opacity="0.7"/>
+
+  <!-- Building/Tower with horizontal stripes -->
+  <g>
+    <!-- Main tower block -->
+    <rect x="125" y="50" width="50" height="65" fill="#d4af37"/>
+    
+    <!-- Horizontal stripe lines (lantai) -->
+    <line x1="125" y1="57" x2="175" y2="57" stroke="#1f3a52" stroke-width="2.5"/>
+    <line x1="125" y1="65" x2="175" y2="65" stroke="#1f3a52" stroke-width="2.5"/>
+    <line x1="125" y1="73" x2="175" y2="73" stroke="#1f3a52" stroke-width="2.5"/>
+    <line x1="125" y1="81" x2="175" y2="81" stroke="#1f3a52" stroke-width="2.5"/>
+    <line x1="125" y1="89" x2="175" y2="89" stroke="#1f3a52" stroke-width="2.5"/>
+    <line x1="125" y1="97" x2="175" y2="97" stroke="#1f3a52" stroke-width="2.5"/>
+    <line x1="125" y1="105" x2="175" y2="105" stroke="#1f3a52" stroke-width="2.5"/>
+    
+    <!-- Spire/crown (triangular) -->
+    <polygon points="150,38 138,50 162,50" fill="#d4af37"/>
+  </g>
+
+  <!-- White curved banner for IMIGRASI text -->
+  <ellipse cx="150" cy="140" rx="85" ry="28" fill="white" stroke="#d4af37" stroke-width="1.5"/>
+  <text x="150" y="148" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#1f3a52" letter-spacing="0.5">IMIGRASI</text>
+
+  <!-- Left shield banner (BHUMI PURA) -->
+  <path d="M 90,168 L 130,168 L 133,185 Q 115,193 90,185 Z" fill="white" stroke="#d4af37" stroke-width="1.5" stroke-linejoin="round"/>
+  <text x="110" y="180" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#1f3a52">BHUMI PURA</text>
+
+  <!-- Right shield banner (WIRA BHAWA) -->
+  <path d="M 170,168 L 210,168 L 210,185 Q 190,193 170,185 Z" fill="white" stroke="#d4af37" stroke-width="1.5" stroke-linejoin="round"/>
+  <text x="190" y="180" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#1f3a52">WIRA BHAWA</text>
+
+  <!-- Subtle cityscape silhouette in background -->
+  <g opacity="0.08" fill="#1f3a52">
+    <polygon points="100,140 105,115 110,140"/>
+    <polygon points="120,140 130,100 140,140"/>
+    <polygon points="160,140 170,105 180,140"/>
+    <polygon points="190,140 200,110 210,140"/>
+  </g>
+
+  <!-- JAKPUS text below circle -->
+  <text x="150" y="265" font-family="Arial, sans-serif, Arial Black" font-size="52" font-weight="900" text-anchor="middle" fill="white" letter-spacing="2">JAKPUS</text>
+</svg>

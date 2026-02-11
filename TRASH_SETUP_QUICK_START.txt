@@ -1,0 +1,107 @@
+Panduan Setup Fitur Menu Sampah - Quick Start
+=============================================
+
+🎯 Langkah-langkah Implementasi:
+
+1. BUAT TABEL DATABASE
+   ✓ Akses: http://localhost/PROJECT ARSIP LOKER/setup_trash_table.php
+   ✓ Login sebagai admin
+   ✓ Script akan otomatis membuat 2 tabel: document_trash dan trash_audit_logs
+
+2. VERIFIKASI SETUP
+   ✓ Menu "Sampah" harus muncul di sidebar admin/staff
+   ✓ Posisi: Setelah "Lemari Pemusnahan"
+
+3. TEST FITUR
+   ✓ Hapus 1 dokumen dari "Dokumen Keseluruhan"
+   ✓ Dokumen seharusnya hilang dari view aktif
+   ✓ Akses "Menu Sampah" - dokumen harus ada dengan countdown 30 hari
+   ✓ Coba "Pulihkan" - dokumen kembali ke aktif
+   ✓ Hapus lagi, kali ini "Hapus Permanen" (tidak bisa di-restore)
+
+📋 FILE YANG DIMODIFIKASI/DIBUAT:
+
+Tabel Database:
+├─ create_trash_table.sql .......................... SQL untuk membuat tabel
+└─ setup_trash_table.php ........................... Setup script (auto-create)
+
+Halaman Baru:
+├─ documents/trash.php ............................. Menu Sampah (fitur restore)
+└─ cleanup_trash.php ............................... Auto-cleanup >30 hari
+
+Modifikasi Penghapusan:
+├─ documents/delete.php ............................ Hapus dokumen aktif → sampah
+├─ documents/delete_all.php ........................ Hapus semua aktif → sampah
+└─ documents/delete_all_pemusnahan.php ............ Hapus pemusnahan → sampah
+
+UI/Menu:
+└─ includes/sidebar.php ............................ Tambah menu Sampah ke sidebar
+
+Dokumentasi:
+├─ TRASH_FEATURE_GUIDE.md .......................... Panduan lengkap fitur
+└─ TRASH_SETUP_QUICK_START.txt .................... File ini
+
+⚙️ SETUP CRON JOB (Optional - untuk auto cleanup):
+
+Tambahkan ke cron jobs server:
+
+  0 2 * * * curl http://localhost/PROJECT%20ARSIP%20LOKER/cleanup_trash.php
+
+Atau dengan cPanel:
+  1. Login cPanel
+  2. Masuk ke Cron Jobs
+  3. Tambah command di atas
+  4. Set schedule: Daily, 2:00 AM
+
+⚡ FITUR UTAMA:
+
+✓ Dokumen dihapus tidak langsung permanen, tapi masuk sampah
+✓ Bisa dipulihkan dalam 30 hari
+✓ Bisa dihapus permanen kapan saja (tidak bisa di-restore)
+✓ Bulk actions untuk menghapus beberapa dokumen sekaligus
+✓ Countdown visual (merah/kuning/biru) sisa hari restore
+✓ Auto-cleanup dokumen >30 hari
+✓ Audit trail lengkap di trash_audit_logs
+✓ Log aktivitas di activity_logs
+
+📊 DATABASE:
+
+Tabel Baru:
+1. document_trash .................. Menyimpan dokumen yang dihapus
+2. trash_audit_logs ................ Audit trail operasi trash
+
+Fields Penting document_trash:
+- original_document_id: ID dokumen asli
+- full_name: Nama lengkap pemilik
+- deleted_at: Kapan dihapus
+- restore_deadline: Batas waktu restore (30 hari)
+- status: in_trash, restored, permanently_deleted
+
+🔐 KEAMANAN:
+
+✓ Hanya admin yang bisa akses Menu Sampah
+✓ Permanent delete perlu konfirmasi
+✓ Semua operasi tercatat di audit log
+✓ Cleanup script bisa di-protect dengan token
+
+❓ TROUBLESHOOTING:
+
+Q: Tabel tidak terbuat?
+A: Pastikan logged in sebagai admin, akses setup_trash_table.php
+
+Q: Menu Sampah tidak muncul?
+A: Clear browser cache, atau restart aplikasi
+
+Q: Dokumen tidak bisa di-restore?
+A: Cek apakah sudah melewati deadline 30 hari
+
+Q: Cleanup tidak berfungsi?
+A: Pastikan file permissions folder documents/uploads/ correct
+
+📞 BANTUAN LEBIH LANJUT:
+
+Lihat dokumentasi lengkap di:
+/PROJECT ARSIP LOKER/TRASH_FEATURE_GUIDE.md
+
+Status: ✅ Ready to Deploy
+Version: 1.0

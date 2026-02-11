@@ -1,0 +1,29 @@
+@startuml
+left to right direction
+
+actor Admin
+actor Staff
+actor Superadmin
+
+Admin --> (Login)
+Admin --> (Kelola Dokumen)
+Admin --> (Cari Dokumen)
+Admin --> (Lihat Laporan)
+Admin --> (Deteksi Lokasi/IP)
+
+Staff --> (Login)
+Staff --> (Kelola Dokumen)
+Staff --> (Cari Dokumen)
+Staff --> (Deteksi Lokasi/IP)
+
+Superadmin --> (Login)
+Superadmin --> (Kelola Data Pengguna)
+Superadmin --> (Kelola Sistem)
+Superadmin --> (Lihat Laporan)
+Superadmin --> (Kelola Dokumen)
+
+(Kelola Dokumen) <|-- (Unggah Dokumen)
+(Kelola Dokumen) <|-- (Update Dokumen)
+(Kelola Dokumen) <|-- (Hapus Dokumen)
+
+@enduml

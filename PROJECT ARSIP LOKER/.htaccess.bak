@@ -1,0 +1,11 @@
+# Simple .htaccess for Sistem Arsip Dokumen
+# Prevent access to sensitive files
+<FilesMatch "\.(sql|log|ini|conf)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# PHP Settings
+php_flag display_errors On
+php_value upload_max_filesize 10M
+php_value post_max_size 12M

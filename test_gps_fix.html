@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test GPS Fix</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Test GPS Fix - Permission Already Granted
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle me-2"></i>Test Scenario</h6>
+                            <p class="mb-0">
+                                This test simulates the scenario where GPS permission is already granted but the system still shows "loading" dialog.
+                            </p>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="card border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0">Permission Status</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="permissionStatus">
+                                            <div class="text-center">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                <p class="mt-2">Checking...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card border-success">
+                                    <div class="card-header bg-success text-white">
+                                        <h6 class="mb-0">GPS Test Result</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="gpsResult">
+                                            <p class="text-muted">Click test button to start</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <button type="button" class="btn btn-primary btn-lg me-2" onclick="testDirectGPS()">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                Test Direct GPS (Fixed)
+                            </button>
+                            <button type="button" class="btn btn-warning btn-lg" onclick="testOldMethod()">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Test Old Method (Broken)
+                            </button>
+                        </div>
+                        
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-lightbulb me-2"></i>Fix Explanation</h6>
+                            <ul class="mb-0">
+                                <li><strong>Problem:</strong> System always showed loading dialog even when permission was already granted</li>
+                                <li><strong>Solution:</strong> Check permission status first, if granted get location directly without showing dialog</li>
+                                <li><strong>Benefit:</strong> Faster GPS activation for users who already granted permission</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Check permission status
+        async function checkPermissionStatus() {
+            const permissionDiv = document.getElementById('permissionStatus');
+            
+            let permissionHtml = '<ul class="list-unstyled mb-0">';
+            
+            if ('permissions' in navigator) {
+                try {
+                    const permission = await navigator.permissions.query({ name: 'geolocation' });
+                    const state = permission.state;
+                    
+                    let icon = 'fas fa-question';
+                    let color = 'text-muted';
+                    let badge = 'secondary';
+                    
+                    if (state === 'granted') {
+                        icon = 'fas fa-check';
+                        color = 'text-success';
+                        badge = 'success';
+                    } else if (state === 'denied') {
+                        icon = 'fas fa-times';
+                        color = 'text-danger';
+                        badge = 'danger';
+                    } else if (state === 'prompt') {
+                        icon = 'fas fa-exclamation';
+                        color = 'text-warning';
+                        badge = 'warning';
+                    }
+                    
+                    permissionHtml += `
+                        <li><i class="${icon} ${color} me-2"></i>Status: <span class="badge bg-${badge}">${state}</span></li>
+                        <li><i class="fas fa-info-circle text-info me-2"></i>Geolocation API: Supported</li>
+                        <li><i class="fas fa-shield-alt text-success me-2"></i>HTTPS: ${location.protocol === 'https:' ? 'Secure' : 'Insecure'}</li>
+                    `;
+                } catch (error) {
+                    permissionHtml += `<li><i class="fas fa-exclamation-triangle text-warning me-2"></i>Error: ${error.message}</li>`;
+                }
+            } else {
+                permissionHtml += '<li><i class="fas fa-times text-warning me-2"></i>Permissions API not supported</li>';
+            }
+            
+            permissionHtml += '</ul>';
+            permissionDiv.innerHTML = permissionHtml;
+        }
+        
+        // Test direct GPS (new fixed method)
+        async function testDirectGPS() {
+            const resultDiv = document.getElementById('gpsResult');
+            
+            resultDiv.innerHTML = `
+                <div class="text-center">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-success">Testing fixed method...</p>
+                </div>
+            `;
+            
+            try {
+                // Check permission first (NEW FIX)
+                if ('permissions' in navigator) {
+                    const permission = await navigator.permissions.query({ name: 'geolocation' });
+                    
+                    if (permission.state === 'granted') {
+                        // Permission already granted, get location directly without dialog
+                        resultDiv.innerHTML = `
+                            <div class="alert alert-info">
+                                <i class="fas fa-check me-2"></i>
+                                Permission already granted! Getting location directly...
+                            </div>
+                        `;
+                        
+                        const position = await getCurrentPositionPromise();
+                        
+                        resultDiv.innerHTML = `
+                            <div class="alert alert-success">
+                                <h6><i class="fas fa-check-circle me-2"></i>Success! (Fixed Method)</h6>
+                                <p><strong>No loading dialog shown!</strong></p>
+                                <small>
+                                    Lat: ${position.coords.latitude.toFixed(6)}<br>
+                                    Lng: ${position.coords.longitude.toFixed(6)}<br>
+                                    Accuracy: ${Math.round(position.coords.accuracy)}m
+                                </small>
+                            </div>
+                        `;
+                        return;
+                    }
+                }
+                
+                // If not granted or no permissions API, show dialog and request
+                resultDiv.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Permission not granted, requesting permission...
+                    </div>
+                `;
+                
+                const position = await getCurrentPositionPromise();
+                
+                resultDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        <h6><i class="fas fa-check-circle me-2"></i>Success!</h6>
+                        <small>
+                            Lat: ${position.coords.latitude.toFixed(6)}<br>
+                            Lng: ${position.coords.longitude.toFixed(6)}<br>
+                            Accuracy: ${Math.round(position.coords.accuracy)}m
+                        </small>
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h6><i class="fas fa-times-circle me-2"></i>Error</h6>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Test old method (always shows dialog)
+        async function testOldMethod() {
+            const resultDiv = document.getElementById('gpsResult');
+            
+            resultDiv.innerHTML = `
+                <div class="text-center">
+                    <div class="spinner-border text-warning" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-warning">Testing old method (always shows dialog)...</p>
+                </div>
+            `;
+            
+            try {
+                // Old method: always request without checking permission first
+                const position = await getCurrentPositionPromise();
+                
+                resultDiv.innerHTML = `
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Success (Old Method)</h6>
+                        <p><strong>Loading dialog was shown even though permission was already granted!</strong></p>
+                        <small>
+                            Lat: ${position.coords.latitude.toFixed(6)}<br>
+                            Lng: ${position.coords.longitude.toFixed(6)}<br>
+                            Accuracy: ${Math.round(position.coords.accuracy)}m
+                        </small>
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h6><i class="fas fa-times-circle me-2"></i>Error</h6>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Helper function to promisify getCurrentPosition
+        function getCurrentPositionPromise() {
+            return new Promise((resolve, reject) => {
+                if (!('geolocation' in navigator)) {
+                    reject(new Error('Geolocation not supported'));
+                    return;
+                }
+                
+                navigator.geolocation.getCurrentPosition(
+                    resolve,
+                    reject,
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 60000
+                    }
+                );
+            });
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPermissionStatus();
+            
+            // Refresh permission status every 3 seconds
+            setInterval(checkPermissionStatus, 3000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+# Folder duplikat / backup
+PROJECT ARSIP LOKER
+*.bak
+
+# Test & debug
+test_*.php
+test_*.html
+*_debug*
+*.log
+
+# Dev / doc (opsional, bisa di-include)
+# *.md
+# BACA_DULU.txt
+# CHECKLIST_HOSTING.md
+# PANDUAN_HOSTING.md
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.sublime-*
+
+# CSV/sample data (kurangi ukuran deploy)
+# *.csv
+
+# Diagram / non-code
+*.puml
