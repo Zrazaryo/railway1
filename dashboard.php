@@ -911,12 +911,15 @@ try {
                 const fd = new FormData(form);
                 fd.append('action', 'create');
                 const res = await fetch('api/user_manage.php', { method: 'POST', body: fd });
-                
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
+                const text = await res.text();
+                let data = null;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error('Response bukan JSON:', text.substring(0, 300));
+                    alert('Terjadi kesalahan server. Periksa konsol atau coba lagi.');
+                    return;
                 }
-                
-                const data = await res.json();
                 if (data.success) {
                     alert('User berhasil ditambahkan');
                     if (userModal) userModal.hide();
@@ -954,12 +957,15 @@ try {
                 const fd = new FormData(form);
                 fd.append('action', 'update');
                 const res = await fetch('api/user_manage.php', { method: 'POST', body: fd });
-                
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
+                const text = await res.text();
+                let data = null;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error('Response bukan JSON:', text.substring(0, 300));
+                    alert('Terjadi kesalahan server. Periksa konsol atau coba lagi.');
+                    return;
                 }
-                
-                const data = await res.json();
                 if (data.success) {
                     alert('User berhasil diupdate');
                     if (userModal) userModal.hide();

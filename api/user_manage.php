@@ -1,11 +1,12 @@
 <?php
+ob_start();
 require_once __DIR__ . '/bootstrap_vercel.php';
 session_start();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 
-// Set header untuk JSON response
-header('Content-Type: application/json');
+if (ob_get_level()) ob_end_clean();
+header('Content-Type: application/json; charset=utf-8');
 
 // Cek login dan role admin atau superadmin
 if (!is_logged_in() || (!is_admin() && !is_superadmin())) {
@@ -337,6 +338,11 @@ try {
     }
     
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    $msg = $e->getMessage();
+    if (strpos($msg, 'Duplicate entry') !== false || strpos($msg, '1062') !== false) {
+        $msg = 'Username atau email sudah digunakan. Silakan gunakan nilai lain.';
+    }
+    if (ob_get_level()) ob_end_clean();
+    echo json_encode(['success' => false, 'message' => $msg]);
 }
 
