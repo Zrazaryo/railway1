@@ -535,7 +535,7 @@ $total_pages = ceil($total_records / $limit);
     <script src="../assets/js/advanced-search.js"></script>
     <script>
         function viewDocument(id) {
-            fetch(`view.php?id=${id}`)
+            fetch(`view.php?id=${id}&_=${Date.now()}`, { cache: 'no-store' })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

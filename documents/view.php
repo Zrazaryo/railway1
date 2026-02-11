@@ -6,8 +6,11 @@ require_once __DIR__ . '/../includes/functions.php';
 // Cek login (boleh diakses admin & staff)
 require_login();
 
-// Set JSON header
-header('Content-Type: application/json');
+// Set JSON header dan no-cache agar daftar file (foto) selalu terbaru setelah upload/edit
+header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
 
 $document_id = (int)($_GET['id'] ?? 0);
 

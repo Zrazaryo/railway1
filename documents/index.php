@@ -298,17 +298,11 @@ $total_pages = ceil($total_records / $limit);
                             <button type="button" class="btn btn-sm btn-danger" onclick="deleteAllDocuments()" title="Hapus Semua Dokumen">
                                 <i class="fas fa-trash-alt"></i> Hapus Semua
                             </button>
-                            <button type="button" class="btn btn-sm btn-success" onclick="exportSelected(false)">
-                                <i class="fas fa-download"></i> Export Terpilih (CSV)
-                            </button>
-                            <button type="button" class="btn btn-sm btn-success" onclick="exportSelected(true)" title="Termasuk foto/lampiran, untuk import kembali agar isi dokumen utuh">
-                                <i class="fas fa-file-archive"></i> Export Terpilih + Lampiran (ZIP)
+                            <button type="button" class="btn btn-sm btn-success" onclick="exportSelected()">
+                                <i class="fas fa-download"></i> Export Terpilih
                             </button>
                             <a href="export.php?all=1" class="btn btn-sm btn-outline-success">
-                                <i class="fas fa-download"></i> Export Semua (CSV)
-                            </a>
-                            <a href="export.php?all=1&with_files=1" class="btn btn-sm btn-outline-success" title="Termasuk foto/lampiran">
-                                <i class="fas fa-file-archive"></i> Export Semua + Lampiran (ZIP)
+                                <i class="fas fa-download"></i> Export Semua
                             </a>
                             <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#importModal">
                                 <i class="fas fa-upload"></i> Import
@@ -537,7 +531,7 @@ $total_pages = ceil($total_records / $limit);
         });
         // View document function
         function viewDocument(id) {
-            fetch(`view.php?id=${id}`)
+            fetch(`view.php?id=${id}&_=${Date.now()}`, { cache: 'no-store' })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -598,8 +592,8 @@ $total_pages = ceil($total_records / $limit);
             checkboxes.forEach(cb => cb.checked = selectAll.checked);
         }
         
-        // Export selected documents (withFiles: true = ZIP dengan lampiran)
-        function exportSelected(withFiles) {
+        // Export selected documents
+        function exportSelected() {
             const checkboxes = document.querySelectorAll('.document-checkbox:checked');
             if (checkboxes.length === 0) {
                 alert('Pilih minimal satu dokumen untuk di-export!');
@@ -609,7 +603,6 @@ $total_pages = ceil($total_records / $limit);
             const docIds = Array.from(checkboxes).map(cb => cb.value);
             const params = new URLSearchParams();
             docIds.forEach(id => params.append('ids[]', id));
-            if (withFiles) params.append('with_files', '1');
             
             window.location.href = `export.php?${params.toString()}`;
         }
@@ -871,11 +864,11 @@ $total_pages = ceil($total_records / $limit);
                 <form action="import.php" method="POST" enctype="multipart/form-data">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="import_file" class="form-label">Pilih File Excel/CSV atau ZIP</label>
+                            <label for="import_file" class="form-label">Pilih File Excel/CSV</label>
                             <input type="file" class="form-control" id="import_file" name="import_file" 
-                                   accept=".xlsx,.xls,.csv,.zip" required>
+                                   accept=".xlsx,.xls,.csv" required>
                             <div class="form-text">
-                                CSV/Excel: data saja. <strong>ZIP</strong>: gunakan file hasil &quot;Export + Lampiran (ZIP)&quot; agar foto/lampiran dokumen ikut tersimpan saat import.
+                                Format file yang didukung: .xlsx, .xls, .csv
                             </div>
                         </div>
                         <div class="mb-3">
@@ -901,8 +894,8 @@ $total_pages = ceil($total_records / $limit);
                         </div>
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            <strong>Catatan:</strong> CSV/Excel: kolom Nama Lengkap, NIK, No Passport, Kode Lemari, dll. 
-                            <strong>Agar foto/lampiran ikut masuk:</strong> export dulu dengan &quot;Export Terpilih + Lampiran (ZIP)&quot;, lalu import file ZIP tersebut di sini.
+                            <strong>Catatan:</strong> Disarankan file Excel/CSV memiliki kolom: 
+                            Nama Lengkap, NIK, No Passport, Kode Lemari, Dokumen Berasal, Kategori (WNI/WNA), <strong>Tahun</strong>
                         </div>
                     </div>
                     <div class="modal-footer">

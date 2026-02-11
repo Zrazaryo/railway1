@@ -413,7 +413,7 @@ $categories = $db->fetchAll("SELECT id, category_name FROM document_categories O
     <script>
         // View document function
         function viewDocument(id) {
-            fetch(`view.php?id=${id}`)
+            fetch(`view.php?id=${id}&_=${Date.now()}`, { cache: 'no-store' })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
