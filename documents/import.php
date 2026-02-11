@@ -39,18 +39,50 @@ if (empty($error_message) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FI
             throw new Exception('Error upload file: ' . $file['error']);
         }
         
-        $allowed_extensions = ['csv', 'xlsx', 'xls'];
+        $allowed_extensions = ['csv', 'xlsx', 'xls', 'zip'];
         $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         
         if (!in_array($file_extension, $allowed_extensions)) {
-            throw new Exception('Format file tidak didukung. Gunakan CSV, XLSX, atau XLS');
+            throw new Exception('Format file tidak didukung. Gunakan CSV, XLSX, XLS, atau ZIP (export dengan lampiran).');
         }
         
-        // Baca file
+        $extract_dir = null; // dipakai jika import dari ZIP (folder files/0, 1, 2...)
         $file_path = $file['tmp_name'];
+        
+        if ($file_extension === 'zip') {
+            if (!class_exists('ZipArchive')) {
+                throw new Exception('PHP ZipArchive tidak tersedia. Import ZIP tidak dapat dilakukan.');
+            }
+            $zip = new ZipArchive();
+            if ($zip->open($file_path, ZipArchive::RDONLY) !== true) {
+                throw new Exception('File ZIP tidak valid atau tidak dapat dibuka.');
+            }
+            $extract_dir = sys_get_temp_dir() . '/arsip_import_' . uniqid() . '/';
+            if (!is_dir($extract_dir)) {
+                mkdir($extract_dir, 0755, true);
+            }
+            $zip->extractTo($extract_dir);
+            $zip->close();
+            $file_path = $extract_dir . 'data.csv';
+            if (!file_exists($file_path)) {
+                @array_map('unlink', glob($extract_dir . 'files/*/*'));
+                @array_map('rmdir', glob($extract_dir . 'files/*'));
+                @rmdir($extract_dir . 'files');
+                @unlink($extract_dir . 'data.csv');
+                @rmdir($extract_dir);
+                throw new Exception('File ZIP harus berisi data.csv di dalamnya (export dari menu Export dengan lampiran).');
+            }
+        }
+        
         $handle = fopen($file_path, 'r');
         
         if ($handle === false) {
+            if ($extract_dir) {
+                @array_map(function($f) { @unlink($f); }, glob($extract_dir . 'files/*/*'));
+                @array_map('rmdir', glob($extract_dir . 'files/*'));
+                @rmdir($extract_dir . 'files');
+                @rmdir($extract_dir);
+            }
             throw new Exception('Gagal membaca file');
         }
         
@@ -138,6 +170,7 @@ if (empty($error_message) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FI
         // Process data rows
         $row_number = 1; // Header is row 1
         $processed_in_batch = []; // Track dokumen yang sudah diproses dalam batch ini
+        $imported_document_ids = []; // Untuk import ZIP: index baris CSV (0-based) => document_id
         
         while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
             $row_number++;
@@ -448,6 +481,11 @@ if (empty($error_message) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FI
                 $db->execute($sql, $params);
                 $document_id = $db->lastInsertId();
                 
+                // Untuk import ZIP: simpan document_id per urutan baris CSV (files/0, files/1, ...)
+                if ($extract_dir !== null) {
+                    $imported_document_ids[$row_number - 2] = $document_id; // row 2 = index 0
+                }
+                
                 // Log activity
                 log_activity($_SESSION['user_id'], 'IMPORT_DOCUMENT', "Import dokumen: $full_name", $document_id);
                 
@@ -464,6 +502,60 @@ if (empty($error_message) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FI
         }
         
         fclose($handle);
+        
+        // Jika import dari ZIP: lampirkan file dari folder files/0, files/1, ...
+        if ($extract_dir !== null && !empty($imported_document_ids) && class_exists('ZipArchive')) {
+            ensure_file_content_column($db);
+            $slug_to_document_type = [
+                'ktp' => 'KTP',
+                'kartu_keluarga' => 'Kartu Keluarga',
+                'akta_lahir' => 'Akta Lahir',
+                'surat_hak_asuh_anak' => 'Surat Hak Asuh Anak',
+                'ijazah' => 'Ijazah',
+                'paspor' => 'Paspor',
+                'surat_nikah' => 'Surat Nikah',
+                'surat_cerai' => 'Surat Cerai',
+            ];
+            foreach ($imported_document_ids as $idx => $document_id) {
+                $files_dir = $extract_dir . 'files/' . $idx . '/';
+                if (!is_dir($files_dir)) {
+                    continue;
+                }
+                $files = glob($files_dir . '*');
+                foreach ($files as $file_path_item) {
+                    if (!is_file($file_path_item)) {
+                        continue;
+                    }
+                    $basename = basename($file_path_item);
+                    $slug = strtolower(pathinfo($basename, PATHINFO_FILENAME));
+                    $ext = strtolower(pathinfo($basename, PATHINFO_EXTENSION));
+                    if (!isset($slug_to_document_type[$slug])) {
+                        continue;
+                    }
+                    $document_type = $slug_to_document_type[$slug];
+                    $content = file_get_contents($file_path_item);
+                    if ($content === false) {
+                        continue;
+                    }
+                    $file_name_orig = $basename;
+                    $file_size = strlen($content);
+                    $mime = 'application/octet-stream';
+                    if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])) {
+                        $mime = 'image/' . ($ext === 'jpg' ? 'jpeg' : $ext);
+                    } elseif ($ext === 'pdf') {
+                        $mime = 'application/pdf';
+                    }
+                    $logical_path = 'uploads/' . $file_name_orig;
+                    $insert_sql = "INSERT INTO document_files (document_id, document_type, file_path, file_name, file_size, file_type, file_content) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    $db->execute($insert_sql, [$document_id, $document_type, $logical_path, $file_name_orig, $file_size, $mime, $content]);
+                }
+            }
+            @array_map(function($f) { @unlink($f); }, glob($extract_dir . 'files/*/*'));
+            @array_map('rmdir', glob($extract_dir . 'files/*'));
+            @rmdir($extract_dir . 'files');
+            @unlink($extract_dir . 'data.csv');
+            @rmdir($extract_dir);
+        }
         
         // Set success message
         if ($imported_count > 0) {
