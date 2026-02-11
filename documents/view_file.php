@@ -44,6 +44,33 @@ try {
         }
     }
     
+    // Serve from DB when file_content ada (upload di Vercel / read-only env)
+    if (!empty($file['file_content'])) {
+        $extension = strtolower(pathinfo($file['file_name'], PATHINFO_EXTENSION));
+        $is_image = in_array($extension, ['jpg', 'jpeg', 'png', 'gif']);
+        $download_mode = isset($_GET['download']) && $_GET['download'] == '1';
+        if ($is_image && !$download_mode) {
+            $mime_types = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif'];
+            header('Content-Type: ' . ($mime_types[$extension] ?? 'image/jpeg'));
+            header('Content-Disposition: inline; filename="' . $file['file_name'] . '"');
+        } else {
+            if ($extension === 'pdf') {
+                header('Content-Type: application/pdf');
+            } elseif ($is_image) {
+                $mime_types = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif'];
+                header('Content-Type: ' . ($mime_types[$extension] ?? 'image/jpeg'));
+            } else {
+                header('Content-Type: application/octet-stream');
+            }
+            header('Content-Disposition: attachment; filename="' . $file['file_name'] . '"');
+        }
+        header('Content-Length: ' . strlen($file['file_content']));
+        header('Cache-Control: public, max-age=3600');
+        if (ob_get_level()) ob_end_clean();
+        echo $file['file_content'];
+        exit();
+    }
+    
     // Normalize file path - try multiple possible locations
     $file_path_db = $file['file_path'];
     $filename = $file['file_name'];

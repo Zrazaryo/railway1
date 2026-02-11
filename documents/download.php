@@ -50,6 +50,26 @@ try {
     // Log download activity
     log_activity($_SESSION['user_id'], 'DOWNLOAD_DOCUMENT', "Download dokumen: " . ($document['title'] ?? $document['full_name']), $document_id);
     
+    // Serve dari DB jika file_content ada (upload di Vercel)
+    if (!empty($file['file_content'])) {
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        if ($extension === 'pdf') {
+            header('Content-Type: application/pdf');
+        } elseif (in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
+            $mime_types = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif'];
+            header('Content-Type: ' . ($mime_types[$extension] ?? 'image/jpeg'));
+        } else {
+            header('Content-Type: application/octet-stream');
+        }
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Content-Length: ' . strlen($file['file_content']));
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        if (ob_get_level()) ob_end_clean();
+        echo $file['file_content'];
+        exit();
+    }
+    
     // Cari file menggunakan logika yang sama dengan view_file.php
     $file_basename = basename($file_path_db);
     if (empty($file_basename)) {

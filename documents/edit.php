@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 
@@ -216,16 +217,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $document) {
                         // Upload file baru
                         $upload_result = upload_file($file);
                         if ($upload_result['success']) {
-                            $detail_sql = "INSERT INTO document_files (document_id, document_type, file_path, file_name, file_size, file_type) 
-                                           VALUES (?, ?, ?, ?, ?, ?)";
-                            $db->execute($detail_sql, [
-                                $document_id,
-                                $document_name,
-                                $upload_result['filepath'],
-                                $upload_result['filename'],
-                                $upload_result['size'],
-                                $file['type']
-                            ]);
+                            $has_content = isset($upload_result['content']);
+                            if ($has_content) {
+                                $detail_sql = "INSERT INTO document_files (document_id, document_type, file_path, file_name, file_size, file_type, file_content) 
+                                               VALUES (?, ?, ?, ?, ?, ?, ?)";
+                                $db->execute($detail_sql, [
+                                    $document_id,
+                                    $document_name,
+                                    $upload_result['filepath'],
+                                    $upload_result['filename'],
+                                    $upload_result['size'],
+                                    $file['type'],
+                                    $upload_result['content']
+                                ]);
+                            } else {
+                                $detail_sql = "INSERT INTO document_files (document_id, document_type, file_path, file_name, file_size, file_type) 
+                                               VALUES (?, ?, ?, ?, ?, ?)";
+                                $db->execute($detail_sql, [
+                                    $document_id,
+                                    $document_name,
+                                    $upload_result['filepath'],
+                                    $upload_result['filename'],
+                                    $upload_result['size'],
+                                    $file['type']
+                                ]);
+                            }
                             $uploaded_files++;
                         }
                     }
@@ -247,6 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $document) {
 
             log_activity($_SESSION['user_id'], 'EDIT_DOCUMENT', "Memperbarui dokumen: $full_name ($uploaded_files file baru)", $document_id);
             
+            if (ob_get_level()) ob_end_clean();
             // Jika ada parameter return, redirect ke halaman tersebut
             if ($return_page === 'locker' && !empty($return_code)) {
                 header('Location: ../lockers/detail.php?code=' . urlencode($return_code) . '&success=' . urlencode('Perubahan dokumen berhasil disimpan'));

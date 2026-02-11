@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 
@@ -147,19 +148,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $upload_result = upload_file($file);
                         
                         if ($upload_result['success']) {
-                            // Simpan detail dokumen
-                            $detail_sql = "INSERT INTO document_files (document_id, document_type, file_path, file_name, file_size, file_type) 
-                                          VALUES (?, ?, ?, ?, ?, ?)";
-                            
-                            $db->execute($detail_sql, [
-                                $document_id,
-                                $document_name,
-                    $upload_result['filepath'],
-                    $upload_result['filename'],
-                    $upload_result['size'],
-                                $file['type']
-                            ]);
-                            
+                            // Simpan detail dokumen (file_content dipakai saat deploy di Vercel / filesystem read-only)
+                            $has_content = isset($upload_result['content']);
+                            if ($has_content) {
+                                $detail_sql = "INSERT INTO document_files (document_id, document_type, file_path, file_name, file_size, file_type, file_content) 
+                                              VALUES (?, ?, ?, ?, ?, ?, ?)";
+                                $db->execute($detail_sql, [
+                                    $document_id,
+                                    $document_name,
+                                    $upload_result['filepath'],
+                                    $upload_result['filename'],
+                                    $upload_result['size'],
+                                    $file['type'],
+                                    $upload_result['content']
+                                ]);
+                            } else {
+                                $detail_sql = "INSERT INTO document_files (document_id, document_type, file_path, file_name, file_size, file_type) 
+                                              VALUES (?, ?, ?, ?, ?, ?)";
+                                $db->execute($detail_sql, [
+                                    $document_id,
+                                    $document_name,
+                                    $upload_result['filepath'],
+                                    $upload_result['filename'],
+                                    $upload_result['size'],
+                                    $file['type']
+                                ]);
+                            }
                             $uploaded_files++;
                         }
                     }
@@ -171,7 +185,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
             $success_message = "Dokumen berhasil ditambahkan dengan $uploaded_files file";
                 
-                // Redirect ke halaman dokumen setelah 2 detik
+                // Redirect ke halaman dokumen setelah 2 detik (bersihkan output agar header tidak error)
+                if (ob_get_level()) ob_end_clean();
                 header("refresh:2;url=index.php");
             
         } catch (Exception $e) {

@@ -1152,7 +1152,8 @@ function format_date_indonesia($date, $include_time = false) {
 }
 
 /**
- * Upload file dengan validasi
+ * Upload file dengan validasi.
+ * Di Vercel (filesystem read-only): simpan ke /tmp lalu kembalikan content agar bisa disimpan ke DB.
  */
 function upload_file($file, $upload_dir = 'uploads/') {
     if (!isset($file['error']) || is_array($file['error'])) {
@@ -1171,17 +1172,40 @@ function upload_file($file, $upload_dir = 'uploads/') {
         return ['success' => false, 'message' => 'Ukuran file terlalu besar (max 10MB)'];
     }
     
+    $filename = generate_unique_filename($file['name']);
+    $logical_path = $upload_dir . $filename; // path untuk disimpan di DB (mis. uploads/xxx.png)
+    
+    if (getenv('VERCEL')) {
+        // Vercel: filesystem read-only kecuali /tmp. Simpan ke /tmp lalu baca content untuk disimpan ke DB.
+        $tmp_dir = '/tmp/arsip_uploads';
+        if (!is_dir($tmp_dir)) {
+            @mkdir($tmp_dir, 0755, true);
+        }
+        $tmp_path = $tmp_dir . '/' . $filename;
+        if (!move_uploaded_file($file['tmp_name'], $tmp_path)) {
+            return ['success' => false, 'message' => 'Gagal menyimpan file (environment read-only)'];
+        }
+        $content = @file_get_contents($tmp_path);
+        @unlink($tmp_path);
+        if ($content === false) {
+            return ['success' => false, 'message' => 'Gagal membaca file'];
+        }
+        return [
+            'success' => true,
+            'filename' => $filename,
+            'filepath' => $logical_path,
+            'size' => $file['size'],
+            'content' => $content
+        ];
+    }
+    
     if (!is_dir($upload_dir)) {
         mkdir($upload_dir, 0755, true);
     }
-    
-    $filename = generate_unique_filename($file['name']);
     $filepath = $upload_dir . $filename;
-    
     if (!move_uploaded_file($file['tmp_name'], $filepath)) {
         return ['success' => false, 'message' => 'Gagal menyimpan file'];
     }
-    
     return [
         'success' => true,
         'filename' => $filename,
