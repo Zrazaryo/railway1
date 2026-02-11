@@ -1,12 +1,12 @@
 <?php
 // Load functions first untuk init_multi_session
-require_once '../includes/functions.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 // Inisialisasi session dengan dukungan multi-tab
 init_multi_session();
 
-require_once '../config/database.php';
-require_once '../includes/search_template.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/search_template.php';
 
 // Cek login dan role staff
 require_login();

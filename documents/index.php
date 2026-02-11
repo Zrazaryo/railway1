@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once '../config/database.php';
-require_once '../includes/functions.php';
-require_once '../includes/search_template.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/search_template.php';
 
 // Cek login (boleh diakses admin & staff)
 require_login();

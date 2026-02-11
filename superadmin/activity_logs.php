@@ -1,7 +1,7 @@
 <?php
 // Load functions
 if (file_exists('../includes/functions.php')) {
-    require_once '../includes/functions.php';
+    require_once __DIR__ . '/../includes/functions.php';
 }
 
 // Inisialisasi session
@@ -15,7 +15,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'superadmin') {
 
 // Load database
 if (file_exists('../config/database.php')) {
-    require_once '../config/database.php';
+    require_once __DIR__ . '/../config/database.php';
 } else {
     die('Database configuration not found');
 }

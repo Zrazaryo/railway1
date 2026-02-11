@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once '../config/database.php';
-require_once '../includes/functions.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 // Hanya pengguna login (admin atau staff pemilik dokumen) yang boleh mengedit
 require_login();

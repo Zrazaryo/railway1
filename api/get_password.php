@@ -2,7 +2,7 @@
 require_once __DIR__ . '/bootstrap_vercel.php';
 session_start();
 require_once __DIR__ . '/../config/database.php';
-require_once '../includes/functions.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 // Set header untuk JSON response
 header('Content-Type: application/json');

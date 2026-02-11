@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once '../config/database.php';
-require_once '../includes/functions.php';
-require_once '../includes/trash_helper.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/trash_helper.php';
 
 // Cek login
 require_login();

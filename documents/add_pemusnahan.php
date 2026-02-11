@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once '../config/database.php';
-require_once '../includes/functions.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 // Hanya admin dan staff yang boleh menambah dokumen pemusnahan. Superadmin dilarang.
 require_admin_or_staff();
