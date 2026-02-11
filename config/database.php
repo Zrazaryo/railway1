@@ -39,6 +39,12 @@ class Database {
         } catch (PDOException $e) {
             die("Koneksi database gagal: " . $e->getMessage());
         }
+        // Selalu baca TIMESTAMP dalam UTC agar konversi ke WIB (jam realtime) konsisten
+        try {
+            $this->connection->exec("SET SESSION time_zone = '+00:00'");
+        } catch (PDOException $e) {
+            // Abaikan jika tidak didukung
+        }
     }
     
     public function getConnection() {

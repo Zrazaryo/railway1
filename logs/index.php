@@ -223,7 +223,7 @@ try {
                                     <?php foreach ($logs as $log): ?>
                                         <tr>
                                             <td>
-                                                <small><?php echo format_date_indonesia($log['created_at'], true); ?></small>
+                                                <small><?php echo format_date_indonesia_wib($log['created_at'], true); ?></small>
                                             </td>
                                             <td>
                                                 <strong><?php echo e($log['full_name']); ?></strong><br>
@@ -356,7 +356,7 @@ try {
                                                             <span class="badge bg-info"><?php echo $stat['unique_users']; ?></span>
                                                         </td>
                                                         <td>
-                                                            <small><?php echo format_date_indonesia($stat['last_access'], true); ?></small>
+                                                            <small><?php echo format_date_indonesia_wib($stat['last_access'], true); ?></small>
                                                         </td>
                                                         <td>
                                                             <button type="button" class="btn btn-sm btn-outline-info" 
@@ -402,7 +402,7 @@ try {
                                                             <span class="badge bg-primary"><?php echo number_format($device['access_count']); ?></span>
                                                         </td>
                                                         <td>
-                                                            <small><?php echo format_date_indonesia($device['last_access'], true); ?></small>
+                                                            <small><?php echo format_date_indonesia_wib($device['last_access'], true); ?></small>
                                                         </td>
                                                     </tr>
                                                 <?php endforeach; ?>

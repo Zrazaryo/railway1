@@ -1152,6 +1152,34 @@ function format_date_indonesia($date, $include_time = false) {
 }
 
 /**
+ * Format tanggal/waktu ke zona WIB (Asia/Jakarta) untuk tampilan jam realtime.
+ * Nilai dari DB (UTC) dikonversi ke WIB agar jam sesuai waktu Indonesia.
+ */
+function format_date_indonesia_wib($date, $include_time = false) {
+    if (empty($date)) return '-';
+    $bulan = [
+        1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    try {
+        $utc = new DateTimeZone('UTC');
+        $wib = new DateTimeZone('Asia/Jakarta');
+        $dt = new DateTime($date, $utc);
+        $dt->setTimezone($wib);
+    } catch (Exception $e) {
+        $dt = new DateTime($date);
+    }
+    $hari = $dt->format('d');
+    $bulan_num = (int)$dt->format('n');
+    $tahun = $dt->format('Y');
+    $result = $hari . ' ' . $bulan[$bulan_num] . ' ' . $tahun;
+    if ($include_time) {
+        $result .= ' ' . $dt->format('H:i');
+    }
+    return $result;
+}
+
+/**
  * Upload file dengan validasi.
  * Di Vercel (filesystem read-only): simpan ke /tmp lalu kembalikan content agar bisa disimpan ke DB.
  */
